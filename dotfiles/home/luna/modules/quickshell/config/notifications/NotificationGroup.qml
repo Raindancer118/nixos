@@ -11,13 +11,56 @@ Card {
     id: root
 
     required property string app
+    // Slides out after `leaveDelay` ms ("Clear all"); the list removes it
+    // afterwards.
+    property bool leaving: false
+    property int leaveDelay: 0
 
     readonly property var items: Notifications.list.filter(n => Notifications.appKey(n) === app)
     readonly property int collapsedCount: Config.groupCollapsedCount
     property bool expanded: false
     readonly property var shown: expanded ? items : items.slice(0, collapsedCount)
 
+    // Grows and shrinks smoothly when notifications come, go or "Show more"
+    // is toggled.
     implicitHeight: column.implicitHeight
+    clip: true
+
+    Behavior on implicitHeight {
+        Anim {}
+    }
+
+    transform: Translate {
+        id: shift
+    }
+
+    // Opacity/x of the delegate itself belong to the ListView transitions.
+    SequentialAnimation {
+        running: root.leaving
+        onStopped: if (!root.leaving) {
+            root.opacity = 1;
+            shift.x = 0;
+        }
+
+        PauseAnimation {
+            duration: root.leaveDelay
+        }
+
+        ParallelAnimation {
+            Anim {
+                target: root
+                property: "opacity"
+                to: 0
+            }
+
+            Anim {
+                target: shift
+                property: "x"
+                to: Theme.anim.slideDistance
+                easing.bezierCurve: Theme.anim.emphasizedDecel
+            }
+        }
+    }
 
     ColumnLayout {
         id: column

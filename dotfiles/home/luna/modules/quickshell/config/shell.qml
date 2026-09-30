@@ -18,9 +18,22 @@ ShellRoot {
         NightLight.enabled;
     }
 
-    ControlCenter {}
+    ControlCenter {
+        id: controlCenter
+    }
 
-    ClickCatcher {}
+    ClickCatcher {
+        id: clickCatcher
+    }
+
+    // Closes the panel when focus is taken away explicitly: a click on a
+    // surface outside the grab, or another layer grabbing the keyboard
+    // (e.g. a launcher). Merely hovering another monitor doesn't count.
+    HyprlandFocusGrab {
+        windows: [controlCenter, ...clickCatcher.instances]
+        active: ShellState.panelOpen
+        onCleared: ShellState.closePanel()
+    }
 
     NotificationPopups {}
 

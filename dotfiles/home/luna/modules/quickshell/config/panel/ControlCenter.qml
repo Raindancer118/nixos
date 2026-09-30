@@ -35,9 +35,12 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.namespace: "quickshell-panel"
-    // Exclusive while open (Escape, password input); released immediately
-    // on close so the previous window gets its focus back.
-    WlrLayershell.keyboardFocus: ShellState.panelOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+    // Not Exclusive: Hyprland then routes every click, even on other
+    // monitors, to this surface with out-of-bounds coordinates, which Qt
+    // drops, and the focus grab in shell.qml never sees the click outside.
+    // The grab keeps keyboard focus here while open instead. Released right
+    // away on close so the previous window gets its focus back.
+    WlrLayershell.keyboardFocus: ShellState.panelOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
     // Click-through while the close animation is still running.
     mask: Region {
         item: ShellState.panelOpen ? scope : null

@@ -60,7 +60,12 @@ Singleton {
     }
 
     function clearAll(): void {
-        list.forEach(n => n.dismiss());
+        dismissMany(list);
+    }
+
+    function dismissMany(ns: var): void {
+        // Copy: dismissing shrinks trackedNotifications (and thus `list`).
+        [...ns].forEach(n => n.dismiss());
     }
 
     // Default action if the app offers one.

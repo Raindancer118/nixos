@@ -88,8 +88,8 @@ PanelWindow {
 
             Timer {
                 // expireTimeout is the raw D-Bus value in milliseconds.
-                interval: card.modelData.expireTimeout > 0 ? Math.min(card.modelData.expireTimeout, Config.popupMaxTimeout) : Config.popupTimeout
-                running: !hover.hovered && !(Config.criticalPopupsStay && card.modelData.urgency === NotificationUrgency.Critical)
+                interval: card.modelData?.expireTimeout > 0 ? Math.min(card.modelData.expireTimeout, Config.popupMaxTimeout) : Config.popupTimeout
+                running: !hover.hovered && !(Config.criticalPopupsStay && card.modelData?.urgency === NotificationUrgency.Critical)
                 onTriggered: Notifications.hidePopup(card.modelData)
             }
 

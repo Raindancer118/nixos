@@ -19,7 +19,18 @@ Item {
     readonly property bool critical: notification?.urgency === NotificationUrgency.Critical
     readonly property var buttons: notification ? notification.actions.filter(a => a.identifier !== "default" && a.text !== "") : []
 
-    implicitHeight: layout.implicitHeight + 2 * Theme.spacing.md
+    // Slides out sideways, collapses so the rows below move up smoothly,
+    // then dismisses (swipe and close button).
+    function dismissAnimated(direction: int): void {
+        if (dismissAnim.running)
+            return;
+        content.x = direction * content.width;
+        dismissAnim.start();
+    }
+
+    property real collapse: 1
+
+    implicitHeight: (layout.implicitHeight + 2 * Theme.spacing.md) * collapse
     clip: true
 
     // Swipe to dismiss.
@@ -28,7 +39,24 @@ Item {
 
         width: parent.width
         height: parent.height
-        opacity: 1 - Math.min(1, Math.abs(x) / width)
+        opacity: (1 - Math.min(1, Math.abs(x) / width)) * appear.value
+
+        // Fades in when it appears inside an existing group or "Show more".
+        QtObject {
+            id: appear
+
+            property real value: 0
+
+            Component.onCompleted: fadeIn.start()
+        }
+
+        Anim {
+            id: fadeIn
+
+            target: appear
+            property: "value"
+            to: 1
+        }
 
         Behavior on x {
             enabled: !drag.active
@@ -46,19 +74,30 @@ Item {
                 if (active)
                     return;
                 if (Math.abs(content.x) > Theme.size.dragDismissThreshold) {
-                    content.x = content.x > 0 ? content.width : -content.width;
-                    dismissTimer.start();
+                    root.dismissAnimated(content.x > 0 ? 1 : -1);
                 } else {
                     content.x = 0;
                 }
             }
         }
 
-        Timer {
-            id: dismissTimer
+        SequentialAnimation {
+            id: dismissAnim
 
-            interval: Theme.anim.normal
-            onTriggered: Notifications.dismiss(root.notification)
+            // Runs alongside the x Behavior above.
+            PauseAnimation {
+                duration: Theme.anim.normal
+            }
+
+            Anim {
+                target: root
+                property: "collapse"
+                to: 0
+            }
+
+            ScriptAction {
+                script: Notifications.dismiss(root.notification)
+            }
         }
 
         Clickable {
@@ -113,7 +152,7 @@ Item {
                         icon: "close"
                         iconSize: Theme.icon.small
                         iconColor: Theme.colors.textMuted
-                        onClicked: Notifications.dismiss(root.notification)
+                        onClicked: root.dismissAnimated(1)
                     }
                 }
 

@@ -89,9 +89,16 @@ Singleton {
     }
 
     readonly property QtObject anim: QtObject {
-        readonly property int fast: 150
-        readonly property int normal: 250
-        readonly property int slow: 350
+        readonly property int fast: Math.round(150 * Config.animationScale)
+        readonly property int normal: Math.round(250 * Config.animationScale)
+        readonly property int slow: Math.round(350 * Config.animationScale)
+        // Delay between items leaving one after another ("Clear all").
+        readonly property int stagger: Math.round(45 * Config.animationScale)
+        // At most this many items get their own stagger step.
+        readonly property int staggerMaxSteps: 8
+
+        // Easing.OutBack overshoot for small springy state changes.
+        readonly property real springOvershoot: 1.2
 
         // Material 3 easing curves (Easing.BezierSpline control points).
         readonly property var standard: [0.2, 0, 0, 1, 1, 1]
@@ -99,6 +106,8 @@ Singleton {
 
         // How far popups and the detail card slide while fading in (px).
         readonly property int slideDistance: 48
+        // Shorter slide for items appearing inside the panel.
+        readonly property int slideShort: 16
         // Start scale of the workspace OSD pill.
         readonly property real popInScale: 0.92
         // The panel fades in this many times faster than it slides.

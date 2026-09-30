@@ -21,6 +21,9 @@ Singleton {
     // Refresh rate of "5 min ago" labels while visible (ms).
     readonly property int relativeTimeInterval: 30000
 
+    // Speed of all animations: 1 = normal, 2 = twice as slow, 0 = off.
+    readonly property real animationScale: 1
+
     // Sliders: volume/brightness change per mouse wheel notch.
     readonly property real sliderWheelStep: 0.05
 

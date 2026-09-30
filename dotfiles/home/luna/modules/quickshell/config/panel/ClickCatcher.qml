@@ -5,6 +5,8 @@ import qs.services
 
 // While the panel is open, an invisible surface on every other monitor
 // closes it on click (on the panel's own monitor ControlCenter does that).
+// Part of the focus grab in shell.qml, so the closing click is swallowed
+// like on the panel's monitor instead of reaching the window below.
 Variants {
     model: Quickshell.screens
 
