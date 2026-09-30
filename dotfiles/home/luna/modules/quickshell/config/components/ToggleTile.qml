@@ -77,10 +77,10 @@ Rectangle {
                 font.weight: Theme.font.weightMedium
             }
 
-            StyledText {
+            SwapText {
                 Layout.fillWidth: true
-                visible: text !== ""
-                text: root.subtitle
+                visible: value !== ""
+                value: root.subtitle
                 color: root.active ? Theme.colors.textOnPrimaryMuted : Theme.colors.textMuted
                 font.pixelSize: Theme.font.small
             }

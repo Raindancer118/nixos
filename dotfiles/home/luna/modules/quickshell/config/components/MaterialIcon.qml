@@ -2,7 +2,8 @@ import QtQuick
 import qs
 
 // A Material Symbols Rounded glyph. `fill` animates between the outlined
-// (0) and filled (1) style.
+// (0) and filled (1) style; a new `icon` shrinks the old glyph away and
+// springs the new one in.
 Text {
     id: root
 
@@ -10,7 +11,16 @@ Text {
     property real size: Theme.icon.normal
     property real fill: 0
 
-    text: icon
+    property string shownIcon
+    property bool ready: false
+
+    onIconChanged: ready ? swap.restart() : shownIcon = icon
+    Component.onCompleted: {
+        shownIcon = icon;
+        ready = true;
+    }
+
+    text: shownIcon
     color: Theme.colors.text
     font.family: Theme.font.iconFamily
     font.pixelSize: size
@@ -21,6 +31,45 @@ Text {
         })
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment: Text.AlignVCenter
+
+    SequentialAnimation {
+        id: swap
+
+        ParallelAnimation {
+            Anim {
+                target: root
+                property: "opacity"
+                to: 0
+                duration: Theme.anim.fast
+            }
+
+            Anim {
+                target: root
+                property: "scale"
+                to: Theme.anim.swapScale
+                duration: Theme.anim.fast
+            }
+        }
+
+        ScriptAction {
+            script: root.shownIcon = root.icon
+        }
+
+        ParallelAnimation {
+            Anim {
+                target: root
+                property: "opacity"
+                to: 1
+                duration: Theme.anim.fast
+            }
+
+            SpringAnim {
+                target: root
+                property: "scale"
+                to: 1
+            }
+        }
+    }
 
     Behavior on fill {
         Anim {

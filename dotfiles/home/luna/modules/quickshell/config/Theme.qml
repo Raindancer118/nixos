@@ -99,6 +99,10 @@ Singleton {
 
         // Easing.OutBack overshoot for small springy state changes.
         readonly property real springOvershoot: 1.2
+        // Size an icon shrinks to before it is replaced.
+        readonly property real swapScale: 0.6
+        // How far status texts move when they change (px).
+        readonly property int swapShift: 4
 
         // Material 3 easing curves (Easing.BezierSpline control points).
         readonly property var standard: [0.2, 0, 0, 1, 1, 1]

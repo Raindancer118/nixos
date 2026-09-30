@@ -105,6 +105,71 @@ ColumnLayout {
         }
     }
 
+    // Do-not-disturb hint above the cards; unfolds and folds away (the empty
+    // state has its own hint).
+    Item {
+        id: dndHint
+
+        readonly property bool shown: Notifications.dnd && Notifications.count > root.clearing.length
+
+        Layout.fillWidth: true
+        Layout.preferredHeight: shown ? hintRow.implicitHeight : 0
+        Layout.topMargin: shown ? 0 : -parent.spacing
+        visible: Layout.preferredHeight > 0
+        opacity: shown ? 1 : 0
+        clip: true
+
+        Behavior on Layout.preferredHeight {
+            Anim {}
+        }
+
+        Behavior on Layout.topMargin {
+            Anim {}
+        }
+
+        Behavior on opacity {
+            Anim {}
+        }
+
+        Rectangle {
+            id: hintRow
+
+            width: parent.width
+            implicitHeight: hintLayout.implicitHeight + 2 * Theme.spacing.sm
+            radius: Theme.radius.small
+            color: Theme.colors.surface
+
+            RowLayout {
+                id: hintLayout
+
+                anchors.fill: parent
+                anchors.leftMargin: Theme.spacing.md
+                anchors.rightMargin: Theme.spacing.md
+                spacing: Theme.spacing.sm
+
+                MaterialIcon {
+                    icon: "do_not_disturb_on"
+                    size: Theme.icon.small
+                    fill: 1
+                    color: Theme.colors.textMuted
+                    scale: dndHint.shown ? 1 : Theme.anim.swapScale
+
+                    Behavior on scale {
+                        SpringAnim {}
+                    }
+                }
+
+                StyledText {
+                    Layout.fillWidth: true
+                    text: I18n.tr("Do not disturb is on. New notifications won't pop up.")
+                    color: Theme.colors.textMuted
+                    font.pixelSize: Theme.font.small
+                    wrapMode: Text.Wrap
+                }
+            }
+        }
+    }
+
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true

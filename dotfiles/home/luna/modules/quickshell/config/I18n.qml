@@ -77,6 +77,7 @@ Singleton {
                 "Notifications": "Benachrichtigungen",
                 "Clear all": "Alle löschen",
                 "All caught up": "Alles erledigt",
+                "Do not disturb is on. New notifications won't pop up.": "„Nicht stören“ ist an. Neue Benachrichtigungen poppen nicht auf.",
                 "Do not disturb is on. New notifications will still show up here.": "„Nicht stören“ ist an. Neue Benachrichtigungen erscheinen trotzdem hier.",
                 "No notifications": "Keine Benachrichtigungen",
                 "Show less": "Weniger anzeigen",

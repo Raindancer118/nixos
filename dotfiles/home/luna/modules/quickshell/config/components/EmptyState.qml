@@ -35,11 +35,11 @@ ColumnLayout {
         font.weight: Theme.font.weightMedium
     }
 
-    StyledText {
+    SwapText {
         Layout.alignment: Qt.AlignHCenter
         Layout.maximumWidth: parent.width
         visible: root.subtitle !== ""
-        text: root.subtitle
+        value: root.subtitle
         color: Theme.colors.textMuted
         horizontalAlignment: Text.AlignHCenter
         wrapMode: Text.WordWrap
